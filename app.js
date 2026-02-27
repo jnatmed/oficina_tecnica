@@ -8,6 +8,12 @@ require('dotenv').config();
 console.log("--------------------------------------------------");
 console.log("🔍 DIAGNÓSTICO DE INICIO:");
 
+// Ruta para mantener el servicio activo (Keep-alive)
+app.get('/ping', (req, res) => {
+    logger.info("Keep-alive: Ping recibido");
+    res.send('pong');
+});
+
 // 1. Verificar existencia física del .env
 const envPath = path.join(__dirname, '.env');
 if (fs.existsSync(envPath)) {
