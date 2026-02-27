@@ -1,0 +1,28 @@
+{% extends "layout.twig" %}
+
+{% block body %}
+    <div class="container border-0">
+        <div class="row justify-content-center align-items-center vh-100">
+            <div class="col-md-6 text-center shadow-lg p-5 bg-white rounded-4">
+                <h1 class="display-1 fw-bold text-danger">404</h1>
+                <h2 class="mb-4">Oops! Página no encontrada</h2>
+                <p class="text-muted mb-4">
+                    Parece que el manual o la sección técnica que estás buscando no existe o fue movida.
+                </p>
+                
+                <div class="mb-5">
+                    <a href="/" class="btn btn-primary btn-lg px-4 shadow-sm">
+                        Volver al Inicio
+                    </a>
+                </div>
+                
+                <div class="opacity-50">
+                    <img src="https://img.icons8.com/illustrations/external-outline-vectors-icons-soft-fill/100/external-Error-404-it-and-development-outline-vectors-icons-soft-fill.png" 
+                         alt="Error icon" 
+                         class="img-fluid" 
+                         style="width: 120px;">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

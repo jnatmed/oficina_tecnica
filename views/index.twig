@@ -1,0 +1,136 @@
+{% extends "layout.twig" %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Registrar Nuevo Manual Técnico</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/nuevo" method="POST" enctype="multipart/form-data">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Título del Problema:</label>
+                            <input type="text" name="titulo" class="form-control" placeholder="Ej: Error de certificados en Citrix" required>
+                        </div>
+
+                        <div id="lista-pasos" class="mb-3">
+                            <label class="form-label fw-bold">Pasos de la Solución (Ctrl+V para pegar captura):</label>
+                            <div class="paso-input p-3 border rounded bg-light mb-3" onpaste="manejarPegado(event, this)">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-secondary me-2">Paso 1</span>
+                                    <input type="text" name="pasos_desc[]" class="form-control" placeholder="Descripción del paso" required>
+                                </div>
+                                <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo">
+                                <div class="preview-container mt-2"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="agregarCampoPaso()">
+                                <i class="bi bi-plus-circle"></i> + Agregar otro paso
+                            </button>
+                            <hr>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                Guardar Manual Técnico
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <h3 class="mb-4">Base de Conocimientos</h3>
+            
+            {% for problema in problemas %}
+                <div class="card mb-4 shadow-sm border-start border-primary border-4">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary">{{ problema.titulo }}</h4>
+                        <p class="text-muted small">
+                            ID: {{ problema.id }} | 
+                            Creado: {{ problema.created_at|date("d/m/Y H:i") }}
+                        </p>
+                        
+                        <div class="list-group list-group-flush mt-3">
+                            {% for paso in problema.pasos %}
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex w-100 justify-content-between align-items-start">
+                                        <p class="mb-1"><strong>{{ paso.orden }}.</strong> {{ paso.descripcion }}</p>
+                                        {% if paso.imagen_url %}
+                                            <button type="button" class="btn btn-sm btn-outline-info" onclick="abrirModal('{{ paso.imagen_url }}')">
+                                                📸 Ver Captura
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info shadow-sm">No hay manuales técnicos registrados todavía.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Maneja el evento de pegado para capturar imágenes del portapapeles
+         */
+        function manejarPegado(event, contenedor) {
+            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            const inputArchivo = contenedor.querySelector('.input-archivo');
+            const previewContainer = contenedor.querySelector('.preview-container');
+
+            for (const item of items) {
+                if (item.type.indexOf("image") !== -1) {
+                    const blob = item.getAsFile();
+                    
+                    // Crear un archivo a partir del Blob del portapapeles
+                    const archivo = new File([blob], `captura_${Date.now()}.png`, { type: blob.type });
+
+                    // Inyectar el archivo en el input file usando DataTransfer
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(archivo);
+                    inputArchivo.files = dataTransfer.files;
+
+                    // Mostrar preview para feedback visual del técnico
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        previewContainer.innerHTML = `
+                            <div class="position-relative d-inline-block">
+                                <img src="${e.target.result}" class="img-thumbnail" style="height: 100px;">
+                                <span class="badge bg-success position-absolute top-0 start-100 translate-middle">OK</span>
+                            </div>
+                            <small class="text-success d-block">Imagen capturada del portapapeles</small>
+                        `;
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            }
+        }
+
+        /**
+         * Agrega un nuevo bloque de paso al formulario
+         */
+        function agregarCampoPaso() {
+            const container = document.getElementById('lista-pasos');
+            const index = container.getElementsByClassName('paso-input').length + 1;
+            
+            const div = document.createElement('div');
+            div.className = 'paso-input p-3 border rounded bg-light mb-3';
+            div.setAttribute('onpaste', 'manejarPegado(event, this)'); // Activar pegado en el nuevo paso
+            
+            div.innerHTML = `
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-secondary me-2">Paso ${index}</span>
+                    <input type="text" name="pasos_desc[]" class="form-control" placeholder="Descripción del paso" required>
+                </div>
+                <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo">
+                <div class="preview-container mt-2"></div>
+            `;
+            container.appendChild(div);
+        }
+    </script>
+{% endblock %}

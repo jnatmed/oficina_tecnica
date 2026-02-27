@@ -1,0 +1,35 @@
+{% extends "layout.twig" %}
+
+{% block body %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-4">Acceso Oficina Técnica</h2>
+
+                {# Alerta de Error #}
+                {% if error %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error:</strong> {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+
+                <form action="/auth/login" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Correo Electrónico:</label>
+                        <input type="email" name="email" class="form-control" placeholder="usuario@encope.gob.ar" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña:</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Ingresar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "layout.twig" %}
+
+{% block body %}
+    <div style="text-align: center; padding: 50px; font-family: sans-serif;">
+        <h1 style="font-size: 72px; color: #6c757d;">500</h1>
+        <h2>Error Interno del Servidor</h2>
+        <p>Hubo un problema al intentar procesar la solicitud en la base de datos de la oficina técnica.</p>
+        
+        <div style="background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 15px; display: inline-block; border-radius: 5px; margin: 20px 0;">
+            <strong>Sugerencia técnica:</strong> Verificá la conexión con Supabase o el estado del Transaction Pooler.
+        </div>
+
+        <div style="margin-top: 30px;">
+            <a href="/" style="
+                background-color: #28a745; 
+                color: white; 
+                padding: 10px 20px; 
+                text-decoration: none; 
+                border-radius: 5px;
+                font-weight: bold;
+            ">
+                Reintentar Ir al Inicio
+            </a>
+        </div>
+
+        <div style="margin-top: 50px; opacity: 0.5;">
+            <img src="https://img.icons8.com/color/96/server-error.png" alt="Server Error icon">
+        </div>
+    </div>
+{% endblock %}
