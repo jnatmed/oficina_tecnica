@@ -3,16 +3,12 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const fs = require('fs'); // Para verificar si el archivo existe físicamente
 require('dotenv').config();
+const logger = require('./config/logger'); // Importamos tu logger
 
 // --- BLOQUE DE LOGGING DIAGNÓSTICO ---
 console.log("--------------------------------------------------");
 console.log("🔍 DIAGNÓSTICO DE INICIO:");
 
-// Ruta para mantener el servicio activo (Keep-alive)
-app.get('/ping', (req, res) => {
-    logger.info("Keep-alive: Ping recibido");
-    res.send('pong');
-});
 
 // 1. Verificar existencia física del .env
 const envPath = path.join(__dirname, '.env');
@@ -30,7 +26,12 @@ console.log("--------------------------------------------------");
 // -------------------------------------
 
 const app = express();
-// ... resto de tu configuración
+
+// Ruta para mantener el servicio activo (Keep-alive)
+app.get('/ping', (req, res) => {
+    logger.info("Keep-alive: Ping recibido");
+    res.send('pong');
+});
 
 // Configuración de Twig
 app.set('views', path.join(__dirname, 'views'));
