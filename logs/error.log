@@ -3,3 +3,6 @@
 {"level":"error","message":"Error al subir imagen a Supabase: new row violates row-level security policy","timestamp":"2026-02-27 17:54:45"}
 {"level":"error","message":"Error al subir imagen a Supabase: new row violates row-level security policy","timestamp":"2026-02-27 17:55:54"}
 {"level":"error","message":"Error al subir imagen a Supabase: new row violates row-level security policy","timestamp":"2026-02-27 18:00:57"}
+{"level":"error","message":"Error al subir imagen a Supabase: new row violates row-level security policy","timestamp":"2026-02-28 22:06:02"}
+{"level":"error","message":"Error al subir imagen a Supabase: Bucket not found","timestamp":"2026-02-28 22:16:59"}
+{"level":"error","message":"Error al subir imagen a Supabase: Bucket not found","timestamp":"2026-02-28 22:18:32"}

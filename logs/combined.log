@@ -27,3 +27,40 @@
 {"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-27 18:31:45"}
 {"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-27 18:31:45"}
 {"level":"info","message":"Keep-alive: Ping recibido","timestamp":"2026-02-27 18:31:50"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 22:04:26"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 22:04:26"}
+{"level":"info","message":"GET /auth/login - Renderizando vista","timestamp":"2026-02-28 22:04:37"}
+{"level":"info","message":"GET /auth/login - Renderizando vista","timestamp":"2026-02-28 22:04:37"}
+{"level":"info","message":"GET /auth/login - Renderizando vista","timestamp":"2026-02-28 22:04:37"}
+{"level":"info","message":"POST /auth/login - Intento para: juanmn.soft@gmail.com","timestamp":"2026-02-28 22:04:40"}
+{"level":"info","message":"Llamando a Supabase Auth (signInWithPassword)...","timestamp":"2026-02-28 22:04:40"}
+{"level":"info","message":"Login exitoso para: juanmn.soft@gmail.com. Generando cookie.","timestamp":"2026-02-28 22:04:41"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 22:04:41"}
+{"level":"info","message":"--- NUEVA PETICIÓN POST /nuevo ---","timestamp":"2026-02-28 22:06:01"}
+{"level":"info","message":"Datos recibidos - Título: \"Como obtener los datos del proyecto de supabase\" | Archivos: 1","timestamp":"2026-02-28 22:06:01"}
+{"level":"error","message":"Error al subir imagen a Supabase: new row violates row-level security policy","timestamp":"2026-02-28 22:06:02"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 22:06:03"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 22:15:16"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 22:15:16"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 22:15:53"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 22:15:53"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 22:16:23"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 22:16:35"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 22:16:35"}
+{"level":"info","message":"--- NUEVA PETICIÓN POST /nuevo ---","timestamp":"2026-02-28 22:16:58"}
+{"level":"info","message":"Datos recibidos - Título: \"Como obtener los datos del proyecto de supabase\" | Archivos: 1","timestamp":"2026-02-28 22:16:58"}
+{"level":"error","message":"Error al subir imagen a Supabase: Bucket not found","timestamp":"2026-02-28 22:16:59"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 22:18:14"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 22:18:14"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 22:18:19"}
+{"level":"info","message":"--- NUEVA PETICIÓN POST /nuevo ---","timestamp":"2026-02-28 22:18:31"}
+{"level":"info","message":"Datos recibidos - Título: \"Como obtener los datos del proyecto de supabase\" | Archivos: 1","timestamp":"2026-02-28 22:18:31"}
+{"level":"error","message":"Error al subir imagen a Supabase: Bucket not found","timestamp":"2026-02-28 22:18:32"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 22:18:45"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 22:18:45"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 22:18:49"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 22:18:50"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 22:18:50"}
+{"level":"info","message":"--- NUEVA PETICIÓN POST /nuevo ---","timestamp":"2026-02-28 22:19:09"}
+{"level":"info","message":"Datos recibidos - Título: \"Como obtener los datos del proyecto de supabase\" | Archivos: 1","timestamp":"2026-02-28 22:19:09"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 22:19:10"}

@@ -52,6 +52,7 @@ exports.crear = async (req, res) => {
 
                 if (uploadError) {
                     logger.error(`Error al subir imagen a Supabase: ${uploadError.message}`);
+                    throw uploadError; // Esto detendrá el proceso y enviará al bloque catch
                 } else {
                     // Obtener la URL pública
                     const { data: { publicUrl: url } } = supabase.storage
