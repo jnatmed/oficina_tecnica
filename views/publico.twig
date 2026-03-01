@@ -1,0 +1,92 @@
+{% extends "layout.twig" %}
+
+{% block body %}
+<div class="row justify-content-center animate__animated animate__fadeIn">
+    <div class="col-lg-8 col-md-10">
+        
+        {# ENCABEZADO DEL MANUAL #}
+        <div class="text-center my-5">
+            <h1 class="display-5 fw-bold text-dark mb-3">{{ problema.titulo }}</h1>
+            <div class="d-flex justify-content-center gap-2">
+                <span class="badge bg-white text-secondary border px-3 py-2 rounded-pill">
+                    <i class="bi bi-hash me-1"></i>Ref: {{ problema.uuid|slice(0,8) }}
+                </span>
+                <span class="badge bg-white text-secondary border px-3 py-2 rounded-pill">
+                    <i class="bi bi-calendar3 me-1"></i>{{ problema.created_at|date("d/m/Y") }}
+                </span>
+            </div>
+        </div>
+
+        {# CUERPO DEL MANUAL #}
+        <div class="card shadow-sm border-0 overflow-hidden mb-5">
+            <div class="card-body p-4 p-md-5">
+                {% for paso in problema.pasos %}
+                    <div class="mb-5 {% if not loop.last %}border-bottom pb-5{% endif %}">
+                        
+                        {# TÍTULO DEL PASO #}
+                        <div class="d-flex align-items-start mb-4">
+                            <span class="badge bg-primary rounded-circle me-3 mt-1 shadow-sm" 
+                                  style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                {{ paso.orden }}
+                            </span>
+                            <h4 class="fw-bold text-dark mb-0" style="line-height: 1.4;">
+                                {{ paso.descripcion }}
+                            </h4>
+                        </div>
+                        
+                        {# CAPTURA DE PANTALLA #}
+                        {% if paso.imagen_url %}
+                            <div class="text-center bg-light p-3 rounded-4">
+                                <div class="image-container position-relative d-inline-block">
+                                    <img src="{{ paso.imagen_url }}" 
+                                         class="img-fluid rounded-3 shadow-sm img-pointer" 
+                                         style="max-height: 400px; cursor: zoom-in; transition: transform 0.2s;"
+                                         onclick="verImagen('{{ paso.imagen_url }}', 'Paso {{ paso.orden }}: {{ problema.titulo }}')"
+                                         onmouseover="this.style.transform='scale(1.02)'"
+                                         onmouseout="this.style.transform='scale(1)'"
+                                         alt="Captura del paso {{ paso.orden }}">
+                                    
+                                    <div class="mt-2 text-muted small">
+                                        <i class="bi bi-arrows-fullscreen me-1"></i> 
+                                        Click en la imagen para ampliar
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        {# FOOTER DE LA VISTA PÚBLICA #}
+        <footer class="text-center text-muted pb-5">
+            <hr class="w-25 mx-auto mb-4">
+            <p class="mb-1">Este documento fue generado por la <strong>Oficina Técnica</strong>.</p>
+            <p class="small">© {{ "now"|date("Y") }} - Soporte de Sistemas</p>
+        </footer>
+
+    </div>
+</div>
+
+<style>
+    /* Estilos específicos para mejorar la lectura */
+    .img-pointer:hover {
+        border: 2px solid #0d6efd;
+        filter: brightness(0.95);
+    }
+    
+    .card {
+        border-radius: 20px;
+    }
+
+    h4 {
+        color: #2c3e50;
+    }
+
+    /* Animación suave para la entrada de los pasos */
+    .border-bottom {
+        border-bottom: 1px solid #edf2f7 !important;
+    }
+</style>
+{% endblock %}

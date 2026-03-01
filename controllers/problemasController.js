@@ -139,3 +139,29 @@ exports.actualizar = async (req, res) => {
     logger.info(`Actualizando problema ${req.params.id}`);
     res.redirect('/');
 };
+
+
+// CONTROLADOR: Vista pública de compartido
+exports.verPublico = async (req, res) => {
+    const { uuid } = req.params;
+    try {
+        const { data, error } = await supabase
+            .from('problemas')
+            .select('*, pasos(*)')
+            .eq('uuid', uuid) // Buscamos por el ID único público
+            .single();
+
+        if (error || !data) {
+            return res.status(404).render('404.twig', { message: "Manual no encontrado" });
+        }
+
+        // Renderizamos una vista especial "publica" sin barra de navegación privada
+        res.render('publico.twig', { 
+            problema: data,
+            esPublico: true
+        });
+    } catch (err) {
+        res.status(500).send("Error del servidor");
+    }
+};
+

@@ -21,6 +21,9 @@ const storage = multer.diskStorage({
 // En tu archivo de rutas
 const upload = multer({ dest: 'uploads/' }); // Carpeta temporal
 
+// 1. Ruta pública (poner arriba de las protegidas)
+router.get('/compartir/:uuid', controller.verPublico);
+
 // Ruta principal
 router.get('/', (req, res, next) => {
     logger.info('Ruta GET / accedida');

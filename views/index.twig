@@ -58,6 +58,11 @@
                             <li><a class="dropdown-item py-2" href="/editar/{{ problema.id }}"><i class="bi bi-pencil me-2 text-warning"></i>Editar</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><button type="button" class="dropdown-item py-2 text-danger" onclick="confirmarEliminacion('{{ problema.id }}', '{{ problema.titulo }}')"><i class="bi bi-trash3 me-2"></i>Eliminar</button></li>
+                            <li>
+                                <button class="dropdown-item py-2" onclick="compartirManual('{{ problema.uuid }}')">
+                                    <i class="bi bi-share me-2 text-info"></i> Compartir enlace
+                                </button>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -184,6 +189,22 @@
             <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo">
             <div class="preview-container mt-2"></div>`;
         container.appendChild(div);
+    }
+    
+    function compartirManual(uuid) {
+        const url = `${window.location.origin}/compartir/${uuid}`;
+        
+        // Copiar al portapapeles
+        navigator.clipboard.writeText(url).then(() => {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Enlace copiado!',
+                text: 'Ya puedes pegar el enlace en un chat o correo.',
+                footer: '<small>El acceso es público para quien tenga este link.</small>',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        });
     }
 </script>
 

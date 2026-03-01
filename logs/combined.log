@@ -61,3 +61,43 @@
 {"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 22:56:26"}
 {"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 22:56:26"}
 {"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 22:56:36"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:07:11"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:07:11"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:07:28"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:07:28"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:07:30"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:07:30"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:08:29"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:08:29"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:08:33"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:08:33"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:08:38"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:08:39"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:09:11"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:09:11"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:09:23"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:09:23"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:09:25"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:09:25"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:09:27"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:09:27"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:10:53"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:10:53"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:13:53"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:13:53"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:15:43"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:15:43"}
+{"level":"info","message":"GET /auth/login - Renderizando vista","timestamp":"2026-02-28 23:16:11"}
+{"level":"info","message":"GET /auth/login - Renderizando vista","timestamp":"2026-02-28 23:16:11"}
+{"level":"info","message":"POST /auth/login - Intento para: juanmn.soft@gmail.com","timestamp":"2026-02-28 23:16:13"}
+{"level":"info","message":"Llamando a Supabase Auth (signInWithPassword)...","timestamp":"2026-02-28 23:16:13"}
+{"level":"info","message":"Login exitoso para: juanmn.soft@gmail.com. Generando cookie.","timestamp":"2026-02-28 23:16:13"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 23:16:13"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:18:12"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:18:12"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:20:14"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:20:14"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:22:16"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:22:16"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:23:13"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:23:13"}
