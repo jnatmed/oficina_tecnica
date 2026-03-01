@@ -39,14 +39,33 @@
     </div>
 
     {# COLUMNA DERECHA: BASE DE CONOCIMIENTOS #}
-    <div class="col-lg-8">
-        <h3 class="fw-bold mb-4 text-dark d-flex align-items-center">
+{# COLUMNA DERECHA: BASE DE CONOCIMIENTOS CON BUSCADOR #}
+<div class="col-lg-8">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-dark mb-0">
             <i class="bi bi-bookmarks-fill me-2 text-primary"></i> Base de Conocimientos
-            <span class="ms-auto badge bg-primary rounded-pill fs-6">{{ problemas|length }} Manuales</span>
         </h3>
-        
+        <span class="badge bg-primary rounded-pill fs-6" id="contadorManuales">
+            {{ problemas|length }} Manuales
+        </span>
+    </div>
+
+    <div class="input-group mb-4 shadow-sm animate__animated animate__fadeIn">
+        <span class="input-group-text bg-white border-end-0">
+            <i class="bi bi-search text-primary"></i>
+        </span>
+        <input type="text" id="inputBuscador" class="form-control border-start-0 py-2" 
+               placeholder="Buscar por título o contenido de los pasos..." 
+               onkeyup="filtrarManuales()">
+    </div>
+
+    <div id="contenedorManuales">
         {% for problema in problemas %}
-            <div class="card card-manual mb-4 shadow-sm animate__animated animate__fadeInUp">
+            {# Aplicamos la clase 'd-none' por defecto a partir del sexto elemento (índice > 5) #}
+            <div class="card card-manual mb-4 shadow-sm animate__animated animate__fadeInUp item-manual {% if loop.index > 5 %}d-none{% endif %}"
+                 data-titulo="{{ problema.titulo|lower }}"
+                 data-contenido="{% for paso in problema.pasos %}{{ paso.descripcion|lower }} {% endfor %}">
+                
                 <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
                     <h4 class="fw-bold text-primary mb-0">{{ problema.titulo }}</h4>
                     
@@ -56,13 +75,9 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                             <li><a class="dropdown-item py-2" href="/editar/{{ problema.id }}"><i class="bi bi-pencil me-2 text-warning"></i>Editar</a></li>
+                            <li><button class="dropdown-item py-2" onclick="compartirManual('{{ problema.uuid }}')"><i class="bi bi-share me-2 text-info"></i>Compartir enlace</button></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><button type="button" class="dropdown-item py-2 text-danger" onclick="confirmarEliminacion('{{ problema.id }}', '{{ problema.titulo }}')"><i class="bi bi-trash3 me-2"></i>Eliminar</button></li>
-                            <li>
-                                <button class="dropdown-item py-2" onclick="compartirManual('{{ problema.uuid }}')">
-                                    <i class="bi bi-share me-2 text-info"></i> Compartir enlace
-                                </button>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -96,7 +111,23 @@
                 <p class="mt-3 text-muted">Aún no hay manuales cargados.</p>
             </div>
         {% endfor %}
+
+        {# Mensaje de "No hay resultados" #}
+        <div id="sinResultados" class="text-center py-5 bg-white rounded shadow-sm d-none animate__animated animate__fadeIn">
+            <i class="bi bi-emoji-frown display-1 text-light"></i>
+            <p class="mt-3 text-muted">No se encontraron manuales que coincidan con tu búsqueda.</p>
+        </div>
+
+        {# Botón para mostrar más si hay más de 5 #}
+        {% if problemas|length > 5 %}
+        <div class="text-center mt-2" id="btnCargarMas">
+            <button class="btn btn-outline-primary rounded-pill px-4" onclick="mostrarTodos()">
+                Ver todos los manuales (+{{ problemas|length - 5 }})
+            </button>
+        </div>
+        {% endif %}
     </div>
+</div>
 </div>
 
 {# MODAL DE BOOTSTRAP (CORREGIDO) #}
@@ -190,7 +221,7 @@
             <div class="preview-container mt-2"></div>`;
         container.appendChild(div);
     }
-    
+
     function compartirManual(uuid) {
         const url = `${window.location.origin}/compartir/${uuid}`;
         
@@ -206,6 +237,49 @@
             });
         });
     }
+    
+/**
+ * Filtra los manuales en tiempo real según el texto ingresado
+ */
+function filtrarManuales() {
+    const busqueda = document.getElementById('inputBuscador').value.toLowerCase();
+    const manuales = document.querySelectorAll('.item-manual');
+    const sinResultados = document.getElementById('sinResultados');
+    const btnCargarMas = document.getElementById('btnCargarMas');
+    let encontrados = 0;
+
+    manuales.forEach(manual => {
+        const titulo = manual.getAttribute('data-titulo');
+        const contenido = manual.getAttribute('data-contenido');
+
+        if (titulo.includes(busqueda) || contenido.includes(busqueda)) {
+            manual.classList.remove('d-none');
+            encontrados++;
+        } else {
+            manual.classList.add('d-none');
+        }
+    });
+
+    // Gestionar UI según resultados
+    document.getElementById('contadorManuales').innerText = `${encontrados} Manuales`;
+    
+    // Ocultar botón "Cargar más" si hay búsqueda activa
+    if (btnCargarMas) {
+        btnCargarMas.classList.toggle('d-none', busqueda.length > 0);
+    }
+
+    sinResultados.classList.toggle('d-none', encontrados > 0);
+}
+
+/**
+ * Muestra todos los manuales ocultos inicialmente
+ */
+function mostrarTodos() {
+    const manuales = document.querySelectorAll('.item-manual');
+    manuales.forEach(m => m.classList.remove('d-none'));
+    const btn = document.getElementById('btnCargarMas');
+    if (btn) btn.classList.add('d-none');
+}
 </script>
 
 <style>

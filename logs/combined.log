@@ -101,3 +101,22 @@
 {"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:22:16"}
 {"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:23:13"}
 {"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:23:13"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:31:59"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:31:59"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:32:05"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:32:05"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:32:49"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:32:50"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:33:01"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:33:02"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:33:04"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:33:04"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 23:33:15"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:34:16"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:34:16"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 23:34:16"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:35:49"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:35:49"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-02-28 23:36:13"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-02-28 23:36:13"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-02-28 23:36:16"}
