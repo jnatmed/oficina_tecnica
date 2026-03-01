@@ -13,17 +13,45 @@
             </div>
             <div class="card-body p-4">
                 <form id="formEditarManual" action="/editar/{{ problema.id }}" method="POST" enctype="multipart/form-data">
+                    
                     <div class="mb-4">
-                        <label class="form-label fw-bold text-secondary">Título del Problema</label>
-                        <input type="text" name="titulo" class="form-control border-2" value="{{ problema.titulo }}" required>
+                        <label class="form-label fw-bold text-secondary small">TÍTULO DEL PROBLEMA</label>
+                        <input type="text" name="titulo" class="form-control border-2 shadow-sm" value="{{ problema.titulo }}" required>
                     </div>
 
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary small d-block">VISIBILIDAD</label>
+                        <div class="form-check form-switch p-2 border rounded bg-light">
+                            <input class="form-check-input ms-0 me-2" type="checkbox" name="es_publico" id="switchPublico" 
+                                   {% if problema.es_publico %}checked{% endif %}>
+                            <label class="form-check-label fw-semibold" for="switchPublico" id="labelPublico">
+                                {% if problema.es_publico %}
+                                    <i class="bi bi-globe text-success"></i> Público (Todo el sistema)
+                                {% else %}
+                                    <i class="bi bi-lock-fill text-danger"></i> Privado (Solo mi grupo)
+                                {% endif %}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary small">CATEGORÍAS (Separadas por coma)</label>
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-tags text-primary"></i></span>
+                            <input type="text" name="tags" class="form-control border-start-0" 
+                                   placeholder="Ej: Redes, Citrix, Soporte" 
+                                   value="{% for cat in problema.categorias %}{{ cat.nombre }}{% if not loop.last %}, {% endif %}{% endfor %}">
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
                     <div id="lista-pasos">
-                        <label class="form-label fw-bold text-secondary mb-3">Pasos de la Solución</label>
+                        <label class="form-label fw-bold text-secondary mb-3 small">PASOS DE LA SOLUCIÓN</label>
                         
                         {% for paso in problema.pasos %}
                             <div class="paso-container p-3 border rounded-3 bg-light mb-3 position-relative" onpaste="manejarPegado(event, this)">
-                                {# Campo oculto para mantener referencia al ID del paso para el backend #}
+                                {# Referencia al ID para el controlador #}
                                 <input type="hidden" name="pasos_id[]" value="{{ paso.id }}">
                                 
                                 <div class="d-flex align-items-center mb-2">
@@ -36,15 +64,12 @@
                                         <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo">
                                     </div>
                                     {% if paso.imagen_url %}
-                                    <div class="col-auto">
-                                        <div class="position-relative group-image-preview">
-                                            <img src="{{ paso.imagen_url }}" 
-                                                 class="rounded border shadow-sm img-hover-zoom" 
-                                                 style="height: 45px; width: 70px; object-fit: cover; cursor: pointer;" 
-                                                 onclick="verImagenFull('{{ paso.imagen_url }}', 'Imagen Actual - Paso {{ paso.orden }}')"
-                                                 title="Click para ampliar">
-                                            <div class="text-center mt-1" style="font-size: 0.6rem; color: #666;">Actual</div>
-                                        </div>
+                                    <div class="col-auto text-center">
+                                        <img src="{{ paso.imagen_url }}" 
+                                             class="rounded border shadow-sm img-pointer" 
+                                             style="height: 45px; width: 70px; object-fit: cover;" 
+                                             onclick="verImagen('{{ paso.imagen_url }}', 'Paso {{ paso.orden }} - {{ problema.titulo }}')">
+                                        <div class="text-muted" style="font-size: 0.6rem;">Actual</div>
                                     </div>
                                     {% endif %}
                                 </div>
@@ -75,43 +100,22 @@
     </div>
 </div>
 
-{# Modal de imagen integrado y corregido para evitar conflictos de inicialización #}
-<div class="modal fade" id="modalImagenEdit" tabindex="-1" aria-hidden="true" style="z-index: 3000;">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content border-0 bg-dark shadow-lg">
-            <div class="modal-header border-0 p-3">
-                <h5 class="modal-title text-white" id="modalTituloEdit"></h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4 text-center">
-                <img src="" id="imgFullEdit" class="img-fluid rounded shadow-lg animate__animated animate__zoomIn">
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-    // 1. Inicialización segura del modal usando el evento DOMContentLoaded
-    let editModal;
-    document.addEventListener('DOMContentLoaded', () => {
-        const modalEl = document.getElementById('modalImagenEdit');
-        if (modalEl) {
-            editModal = new bootstrap.Modal(modalEl);
-        }
-    });
-
     /**
-     * Muestra la imagen en pantalla completa
+     * Manejo del Switch de Visibilidad
      */
-    function verImagenFull(url, titulo) {
-        if (!editModal) return;
-        document.getElementById('imgFullEdit').src = url;
-        document.getElementById('modalTituloEdit').innerText = titulo;
-        editModal.show();
+    const switchPublico = document.getElementById('switchPublico');
+    if (switchPublico) {
+        switchPublico.addEventListener('change', function() {
+            const label = document.getElementById('labelPublico');
+            label.innerHTML = this.checked 
+                ? '<i class="bi bi-globe text-success"></i> Público (Todo el sistema)' 
+                : '<i class="bi bi-lock-fill text-danger"></i> Privado (Solo mi grupo)';
+        });
     }
 
     /**
-     * Maneja el pegado de imágenes desde el portapapeles
+     * Maneja el pegado de imágenes
      */
     function manejarPegado(event, contenedor) {
         const items = (event.clipboardData || event.originalEvent.clipboardData).items;
@@ -135,7 +139,6 @@
                             <span class="badge bg-success position-absolute top-0 start-100 translate-middle rounded-circle shadow">
                                 <i class="bi bi-check"></i>
                             </span>
-                            <small class="text-primary d-block fw-bold mt-1">Nueva imagen lista</small>
                         </div>`;
                 };
                 reader.readAsDataURL(blob);
@@ -144,7 +147,7 @@
                     toast: true,
                     position: 'top-end',
                     icon: 'success',
-                    title: 'Captura detectada correctamente',
+                    title: 'Captura lista para actualizar',
                     showConfirmButton: false,
                     timer: 2000
                 });
@@ -153,7 +156,7 @@
     }
 
     /**
-     * Añade dinámicamente nuevos campos de pasos
+     * Añade nuevos pasos con corrección de solapamiento
      */
     function agregarCampoPaso() {
         const container = document.getElementById('lista-pasos');
@@ -162,10 +165,8 @@
         div.className = 'paso-container p-3 border rounded-3 bg-white mb-3 shadow-sm animate__animated animate__fadeInLeft position-relative';
         div.setAttribute('onpaste', 'manejarPegado(event, this)');
         
-        // Reemplaza solo este bloque dentro de la función agregarCampoPaso()
         div.innerHTML = `
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" style="font-size: 0.7rem; z-index: 2;" title="Quitar este nuevo paso" onclick="this.parentElement.remove()"></button>
-            
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" style="font-size: 0.7rem; z-index: 2;" title="Quitar este paso" onclick="this.parentElement.remove()"></button>
             <div class="pe-4">
                 <div class="d-flex align-items-center mb-2">
                     <span class="badge bg-info text-dark rounded-pill me-2">${index}</span>
@@ -173,27 +174,26 @@
                 </div>
                 <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo">
                 <div class="preview-container mt-2"></div>
-            </div>
-        `;
+            </div>`;
         container.appendChild(div);
     }
 
-    // Confirmación con SweetAlert2 antes de procesar el formulario
+    /**
+     * Confirmación antes de enviar
+     */
     document.getElementById('formEditarManual').onsubmit = function(e) {
         e.preventDefault();
         Swal.fire({
-            title: '¿Guardar los cambios?',
-            text: "Se actualizará el contenido del manual en la base de datos.",
+            title: '¿Confirmar cambios?',
+            text: "Se actualizará la visibilidad, tags y pasos del manual.",
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#198754',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: '<i class="bi bi-save me-1"></i> Sí, actualizar',
+            confirmButtonText: 'Sí, actualizar',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
-            if (result.isConfirmed) {
-                this.submit();
-            }
+            if (result.isConfirmed) this.submit();
         });
     };
 </script>
@@ -201,7 +201,7 @@
 <style>
     .paso-container { transition: all 0.2s; border-width: 2px !important; }
     .paso-container:hover { border-color: #ffc107 !important; }
-    .img-hover-zoom { transition: transform 0.2s; }
-    .img-hover-zoom:hover { transform: scale(1.1); }
+    .img-pointer { cursor: zoom-in; transition: transform 0.2s; }
+    .img-pointer:hover { transform: scale(1.05); filter: brightness(0.9); }
 </style>
 {% endblock %}

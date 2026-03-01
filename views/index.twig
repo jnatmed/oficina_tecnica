@@ -2,143 +2,188 @@
 
 {% block body %}
 <div class="row g-4">
-    {# COLUMNA IZQUIERDA: REGISTRO #}
+    {# COLUMNA IZQUIERDA: FORMULARIO DE REGISTRO #}
     <div class="col-lg-4">
-        <div class="card shadow-sm sticky-top" style="top: 20px;">
+        <div class="card shadow border-0 sticky-top" style="top: 20px; z-index: 1020;">
             <div class="card-header bg-primary text-white py-3">
                 <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Nuevo Manual Técnico</h5>
             </div>
             <div class="card-body p-4">
                 <form id="formNuevoManual" action="/nuevo" method="POST" enctype="multipart/form-data">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary small">TÍTULO DEL PROBLEMA</label>
+                        <input type="text" name="titulo" class="form-control border-2 shadow-sm" placeholder="Ej: Error de certificados Citrix" required>                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary small d-block">VISIBILIDAD</label>
+                        <div class="form-check form-switch p-2 border rounded bg-light">
+                            <input class="form-check-input ms-0 me-2" type="checkbox" name="es_publico" id="switchPublico" checked>                             <label class="form-check-label fw-semibold" for="switchPublico" id="labelPublico">
+                                <i class="bi bi-globe text-success"></i> Público (Todo el sistema)                             </label>
+                        </div>
+                        <small class="text-muted" style="font-size: 0.75rem;">Si se desactiva, solo los usuarios de tu grupo verán este manual.</small>                     </div>
+
                     <div class="mb-4">
-                        <label class="form-label fw-bold text-secondary">Título del Problema</label>
-                        <input type="text" name="titulo" class="form-control" placeholder="Ej: Error de certificados" required>
-                    </div>
+                        <label class="form-label fw-bold text-secondary small">CATEGORÍAS (Tags)</label>
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-tags text-primary"></i></span>                             <input type="text" name="tags" class="form-control border-start-0" 
+                                   placeholder="Ej: Redes, Citrix, Soporte" 
+                                   title="Separa los tags con comas">                         </div>
+                        <small class="text-muted" style="font-size: 0.75rem;">Usa comas para separar múltiples etiquetas.</small>                     </div>
+
+                    <hr class="my-4">
 
                     <div id="lista-pasos">
-                        <div class="paso-container p-3 border rounded bg-light mb-3 position-relative" onpaste="manejarPegado(event, this)">
-                            <div class="d-flex align-items-center mb-2">
+                        <label class="form-label fw-bold text-secondary small mb-3">PASOS DE LA SOLUCIÓN</label>
+                        <div class="paso-container p-3 border rounded bg-light mb-3 position-relative" onpaste="manejarPegado(event, this)">                             <div class="d-flex align-items-center mb-2">
                                 <span class="badge bg-primary rounded-pill me-2">1</span>
-                                <input type="text" name="pasos_desc[]" class="form-control form-control-sm" placeholder="Descripción del paso..." required>
+                                <input type="text" name="pasos_desc[]" class="form-control form-control-sm border-2" placeholder="Describe el paso..." required> 
                             </div>
-                            <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo">
+                            <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo"> 
                             <div class="preview-container mt-2"></div>
                         </div>
                     </div>
 
-                    <button type="button" class="btn btn-outline-primary btn-sm w-100 mb-4" onclick="agregarCampoPaso()">
-                        <i class="bi bi-plus-circle me-1"></i> Agregar otro paso
-                    </button>
-
-                    <button type="submit" class="btn btn-success btn-lg w-100 shadow-sm">
-                        <i class="bi bi-save me-2"></i>Guardar Manual
-                    </button>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="agregarCampoPaso()">
+                            <i class="bi bi-plus-circle me-1"></i> Agregar otro paso 
+                        </button>
+                        <button type="submit" class="btn btn-success btn-lg mt-2 shadow">
+                            <i class="bi bi-cloud-arrow-up-fill me-2"></i>Guardar Manual 
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 
-    {# COLUMNA DERECHA: BASE DE CONOCIMIENTOS #}
-{# COLUMNA DERECHA: BASE DE CONOCIMIENTOS CON BUSCADOR #}
-<div class="col-lg-8">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold text-dark mb-0">
-            <i class="bi bi-bookmarks-fill me-2 text-primary"></i> Base de Conocimientos
-        </h3>
-        <span class="badge bg-primary rounded-pill fs-6" id="contadorManuales">
-            {{ problemas|length }} Manuales
-        </span>
-    </div>
+    {# COLUMNA DERECHA: BASE DE CONOCIMIENTOS CON BUSCADOR Y TAGS #}
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold text-dark mb-0">
+                <i class="bi bi-bookmarks-fill me-2 text-primary"></i> Base de Conocimientos 
+            </h3>
+            <span class="badge bg-primary rounded-pill fs-6" id="contadorManuales">
+                {{ problemas|length }} Manuales 
+            </span>
+        </div>
 
-    <div class="input-group mb-4 shadow-sm animate__animated animate__fadeIn">
-        <span class="input-group-text bg-white border-end-0">
-            <i class="bi bi-search text-primary"></i>
-        </span>
-        <input type="text" id="inputBuscador" class="form-control border-start-0 py-2" 
-               placeholder="Buscar por título o contenido de los pasos..." 
-               onkeyup="filtrarManuales()">
-    </div>
-
-    <div id="contenedorManuales">
-        {% for problema in problemas %}
-            {# Aplicamos la clase 'd-none' por defecto a partir del sexto elemento (índice > 5) #}
-            <div class="card card-manual mb-4 shadow-sm animate__animated animate__fadeInUp item-manual {% if loop.index > 5 %}d-none{% endif %}"
-                 data-titulo="{{ problema.titulo|lower }}"
-                 data-contenido="{% for paso in problema.pasos %}{{ paso.descripcion|lower }} {% endfor %}">
+        <div class="card shadow-sm border-0 mb-4 animate__animated animate__fadeIn">
+            <div class="card-body p-3">
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="bi bi-search text-primary"></i> 
+                    </span>
+                    <input type="text" id="inputBuscador" class="form-control border-start-0 py-2" 
+                           placeholder="Buscar por título, contenido o etiquetas..." 
+                           onkeyup="filtrarManuales()"> 
+                </div>
                 
-                <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-                    <h4 class="fw-bold text-primary mb-0">{{ problema.titulo }}</h4>
-                    
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="dropdown" title="Opciones de gestión">
-                            <i class="bi bi-tools"></i>
+                <div class="d-flex flex-wrap gap-2" id="filtroTags">
+                    <button class="btn btn-sm btn-primary rounded-pill btn-tag-filtro" onclick="filtrarPorTag('todos', this)">
+                        Todos <span class="badge bg-white text-primary ms-1">{{ problemas|length }}</span> 
+                    </button>
+                    {% for cat in categorias %}
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill btn-tag-filtro" 
+                                onclick="filtrarPorTag('{{ cat.nombre|lower }}', this)">
+                            {{ cat.nombre }} <span class="badge bg-secondary ms-1">{{ cat.count }}</span> 
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                            <li><a class="dropdown-item py-2" href="/editar/{{ problema.id }}"><i class="bi bi-pencil me-2 text-warning"></i>Editar</a></li>
-                            <li><button class="dropdown-item py-2" onclick="compartirManual('{{ problema.uuid }}')"><i class="bi bi-share me-2 text-info"></i>Compartir enlace</button></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><button type="button" class="dropdown-item py-2 text-danger" onclick="confirmarEliminacion('{{ problema.id }}', '{{ problema.titulo }}')"><i class="bi bi-trash3 me-2"></i>Eliminar</button></li>
-                        </ul>
-                    </div>
+                    {% endfor %}
                 </div>
-                
-                <div class="card-body px-4 pb-4">
-                    <p class="text-muted small"><i class="bi bi-calendar-event me-1"></i> {{ problema.created_at|date("d/m/Y H:i") }}</p>
-                    <div class="list-group list-group-flush border rounded">
-                        {% for paso in problema.pasos %}
-                            <div class="list-group-item p-3">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <span class="fw-bold text-primary">{{ paso.orden }}.</span> {{ paso.descripcion }}
-                                    </div>
-                                    {% if paso.imagen_url %}
-                                    <div class="col-auto">
-                                        <div class="image-preview-wrapper" onclick="verImagenFull('{{ paso.imagen_url }}', '{{ problema.titulo }} - Paso {{ paso.orden }}')">
-                                            <img src="{{ paso.imagen_url }}" class="rounded shadow-sm" style="width: 70px; height: 45px; object-fit: cover; cursor: pointer;">
-                                            <div class="overlay"><i class="bi bi-fullscreen text-white"></i></div>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                </div>
+            </div>
+        </div>
+
+        <div id="contenedorManuales">
+            {% for problema in problemas %}
+                <div class="card card-manual mb-4 shadow-sm animate__animated animate__fadeInUp item-manual {% if loop.index > 5 %}d-none{% endif %}"
+                     data-titulo="{{ problema.titulo|lower }}"
+                     data-visibilidad="{{ problema.es_publico ? 'publico' : 'privado' }}" 
+                     data-tags="{% for cat in problema.categorias %}{{ cat.nombre|lower }} {% endfor %}" 
+                     data-contenido="{% for paso in problema.pasos %}{{ paso.descripcion|lower }} {% endfor %}"> 
+                    
+                    <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="fw-bold text-primary mb-1">
+                                {{ problema.titulo }} 
+                                {% if not problema.es_publico %}
+                                    <i class="bi bi-lock-fill text-muted ms-2" title="Privado del grupo" style="font-size: 0.9rem;"></i> 
+                                {% endif %}
+                            </h4>
+                            <div class="mt-1">
+                                {% for cat in problema.categorias %}
+                                    <span class="badge bg-light text-primary border me-1 small fw-normal">{{ cat.nombre }}</span> 
+                                {% endfor %}
                             </div>
-                        {% endfor %}
+                        </div>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-tools"></i> 
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                <li><a class="dropdown-item py-2" href="/editar/{{ problema.id }}"><i class="bi bi-pencil me-2 text-warning"></i>Editar</a></li> 
+                                <li><button class="dropdown-item py-2" onclick="compartirManual('{{ problema.uuid }}')"><i class="bi bi-share me-2 text-info"></i>Compartir enlace</button></li> 
+                                <li><hr class="dropdown-divider"></li> 
+                                <li><button type="button" class="dropdown-item py-2 text-danger" onclick="confirmarEliminacion('{{ problema.id }}', '{{ problema.titulo }}')"><i class="bi bi-trash3 me-2"></i>Eliminar</button></li> 
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body px-4 pb-4">
+                        <p class="text-muted small"><i class="bi bi-calendar-event me-1"></i> {{ problema.created_at|date("d/m/Y H:i") }}</p> 
+                        <div class="list-group list-group-flush border rounded">
+                            {% for paso in problema.pasos %}
+                                <div class="list-group-item p-3">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <span class="fw-bold text-primary">{{ paso.orden }}.</span> {{ paso.descripcion }} 
+                                        </div>
+                                        {% if paso.imagen_url %}
+                                        <div class="col-auto">
+                                            <div class="image-preview-wrapper" onclick="verImagenFull('{{ paso.imagen_url }}', '{{ problema.titulo }} - Paso {{ paso.orden }}')">
+                                                <img src="{{ paso.imagen_url }}" class="rounded shadow-sm" style="width: 70px; height: 45px; object-fit: cover; cursor: pointer;"> 
+                                                <div class="overlay"><i class="bi bi-fullscreen text-white"></i></div> 
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% else %}
-            <div class="text-center py-5 bg-white rounded shadow-sm">
-                <i class="bi bi-inbox display-1 text-light"></i>
-                <p class="mt-3 text-muted">Aún no hay manuales cargados.</p>
-            </div>
-        {% endfor %}
+            {% else %}
+                <div class="text-center py-5 bg-white rounded shadow-sm">
+                    <i class="bi bi-inbox display-1 text-light"></i>
+                    <p class="mt-3 text-muted">Aún no hay manuales cargados.</p> 
+                </div>
+            {% endfor %}
 
-        {# Mensaje de "No hay resultados" #}
-        <div id="sinResultados" class="text-center py-5 bg-white rounded shadow-sm d-none animate__animated animate__fadeIn">
-            <i class="bi bi-emoji-frown display-1 text-light"></i>
-            <p class="mt-3 text-muted">No se encontraron manuales que coincidan con tu búsqueda.</p>
-        </div>
+            <div id="sinResultados" class="text-center py-5 bg-white rounded shadow-sm d-none">
+                <i class="bi bi-emoji-frown display-1 text-light"></i>
+                <p class="mt-3 text-muted">No se encontraron manuales que coincidan.</p> 
+            </div>
 
-        {# Botón para mostrar más si hay más de 5 #}
-        {% if problemas|length > 5 %}
-        <div class="text-center mt-2" id="btnCargarMas">
-            <button class="btn btn-outline-primary rounded-pill px-4" onclick="mostrarTodos()">
-                Ver todos los manuales (+{{ problemas|length - 5 }})
-            </button>
+            {% if problemas|length > 5 %}
+            <div class="text-center mt-2" id="btnCargarMas">
+                <button class="btn btn-outline-primary rounded-pill px-4" onclick="mostrarTodos()">
+                    Ver todos los manuales (+{{ problemas|length - 5 }})
+                </button>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 </div>
-</div>
 
-{# MODAL DE BOOTSTRAP (CORREGIDO) #}
+{# MODAL DE BOOTSTRAP #}
 <div class="modal fade" id="modalImagen" tabindex="-1" aria-hidden="true" style="z-index: 3000;">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content bg-transparent border-0">
             <div class="modal-header border-0 p-0 mb-2 justify-content-end">
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-0 text-center">
-                <img src="" id="imgFull" class="img-fluid rounded shadow-lg animate__animated animate__zoomIn">
+                <img src="" id="imgFull" class="img-fluid rounded shadow-lg animate__animated animate__zoomIn"> 
                 <h5 class="text-white mt-3" id="modalTitulo"></h5>
             </div>
         </div>
@@ -148,56 +193,107 @@
 <form id="formEliminar" method="POST" style="display: none;"></form>
 
 <script>
-    // Se inicializa el modal una vez que el DOM está listo
     let bootstrapModal;
+    let tagActivo = 'todos'; 
+
     document.addEventListener('DOMContentLoaded', () => {
-        bootstrapModal = new bootstrap.Modal(document.getElementById('modalImagen'));
+        const modalElement = document.getElementById('modalImagen');
+        if (modalElement) {
+            bootstrapModal = new bootstrap.Modal(modalElement);
+        }
     });
 
     function verImagenFull(url, titulo) {
-        document.getElementById('imgFull').src = url;
-        document.getElementById('modalTitulo').innerText = titulo;
+        document.getElementById('imgFull').src = url; 
+        document.getElementById('modalTitulo').innerText = titulo; 
         bootstrapModal.show();
+    }
+
+    function filtrarPorTag(tag, elemento) {
+        document.querySelectorAll('.btn-tag-filtro').forEach(btn => {
+            btn.classList.replace('btn-primary', 'btn-outline-secondary');
+            const badge = btn.querySelector('.badge');
+            if (badge) badge.classList.replace('text-primary', 'text-white'); 
+        });
+        elemento.classList.replace('btn-outline-secondary', 'btn-primary');
+        const activeBadge = elemento.querySelector('.badge');
+        if (activeBadge) activeBadge.classList.replace('text-white', 'text-primary'); 
+
+        tagActivo = tag;
+        filtrarManuales(); 
+    }
+
+    function filtrarManuales() {
+        const busqueda = document.getElementById('inputBuscador').value.toLowerCase(); 
+        const manuales = document.querySelectorAll('.item-manual');
+        const sinResultados = document.getElementById('sinResultados');
+        const btnCargarMas = document.getElementById('btnCargarMas');
+        let encontrados = 0; 
+
+        manuales.forEach(manual => {
+            const titulo = manual.getAttribute('data-titulo') || "";
+            const contenido = manual.getAttribute('data-contenido') || "";
+            const tags = manual.getAttribute('data-tags') || "";
+            
+            const coincideTexto = titulo.includes(busqueda) || contenido.includes(busqueda) || tags.includes(busqueda);
+            const coincideTag = (tagActivo === 'todos' || tags.includes(tagActivo)); 
+
+            if (coincideTexto && coincideTag) {
+                manual.classList.remove('d-none');
+                encontrados++;
+            } else {
+                manual.classList.add('d-none'); 
+            }
+        });
+
+        document.getElementById('contadorManuales').innerText = `${encontrados} Manuales`; 
+        if (btnCargarMas) {
+            btnCargarMas.classList.toggle('d-none', busqueda.length > 0 || tagActivo !== 'todos'); 
+        }
+        sinResultados.classList.toggle('d-none', encontrados > 0); 
+    }
+
+    function mostrarTodos() {
+        document.querySelectorAll('.item-manual').forEach(m => m.classList.remove('d-none')); 
+        if (document.getElementById('btnCargarMas')) document.getElementById('btnCargarMas').remove(); 
     }
 
     function confirmarEliminacion(id, titulo) {
         Swal.fire({
             title: '¿Confirmar eliminación?',
-            text: `El manual "${titulo}" se eliminará permanentemente.`,
+            text: `Se borrará "${titulo}" permanentemente.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
+            confirmButtonText: 'Sí, borrar' 
         }).then((result) => {
             if (result.isConfirmed) {
                 const form = document.getElementById('formEliminar');
-                form.action = `/eliminar/${id}`;
+                form.action = `/eliminar/${id}`; 
                 form.submit();
             }
         });
     }
 
     function manejarPegado(event, contenedor) {
-        const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        const items = (event.clipboardData || event.originalEvent.clipboardData).items; 
         const inputArchivo = contenedor.querySelector('.input-archivo');
         const previewContainer = contenedor.querySelector('.preview-container');
 
         for (const item of items) {
             if (item.type.indexOf("image") !== -1) {
                 const blob = item.getAsFile();
-                const archivo = new File([blob], `captura_${Date.now()}.png`, { type: blob.type });
+                const archivo = new File([blob], `captura_${Date.now()}.png`, { type: blob.type }); 
                 const dataTransfer = new DataTransfer();
                 dataTransfer.items.add(archivo);
-                inputArchivo.files = dataTransfer.files;
+                inputArchivo.files = dataTransfer.files; 
 
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     previewContainer.innerHTML = `
-                        <div class="position-relative d-inline-block animate__animated animate__fadeIn">
+                        <div class="position-relative d-inline-block mt-2 animate__animated animate__fadeIn">
                             <img src="${e.target.result}" class="img-thumbnail" style="height: 100px;">
-                            <span class="badge bg-success position-absolute top-0 start-100 translate-middle shadow">OK</span>
+                            <span class="badge bg-success position-absolute top-0 start-100 translate-middle shadow">OK</span> 
                         </div>`;
                 };
                 reader.readAsDataURL(blob);
@@ -206,88 +302,54 @@
     }
 
     function agregarCampoPaso() {
-        const container = document.getElementById('lista-pasos');
+        const container = document.getElementById('lista-pasos'); 
         const index = container.getElementsByClassName('paso-container').length + 1;
-        const div = document.createElement('div');
+        const div = document.createElement('div'); 
         div.className = 'paso-container p-3 border rounded bg-light mb-3 animate__animated animate__fadeInLeft position-relative';
-        div.setAttribute('onpaste', 'manejarPegado(event, this)');
+        div.setAttribute('onpaste', 'manejarPegado(event, this)'); 
         div.innerHTML = `
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" style="font-size: 0.6rem;" onclick="this.parentElement.remove()"></button>
-            <div class="d-flex align-items-center mb-2">
-                <span class="badge bg-primary rounded-pill me-2">${index}</span>
-                <input type="text" name="pasos_desc[]" class="form-control form-control-sm" placeholder="Descripción del paso..." required>
-            </div>
-            <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo">
-            <div class="preview-container mt-2"></div>`;
-        container.appendChild(div);
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" style="font-size: 0.6rem; z-index: 5;" onclick="this.parentElement.remove()"></button>
+            <div class="pe-4">
+                <div class="d-flex align-items-center mb-2">
+                    <span class="badge bg-primary rounded-pill me-2">${index}</span>
+                    <input type="text" name="pasos_desc[]" class="form-control form-control-sm" placeholder="Descripción del paso..." required> 
+                </div>
+                <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo">
+                <div class="preview-container mt-2"></div>
+            </div>`;
+        container.appendChild(div); 
     }
 
     function compartirManual(uuid) {
-        const url = `${window.location.origin}/compartir/${uuid}`;
-        
-        // Copiar al portapapeles
+        const url = `${window.location.origin}/compartir/${uuid}`; 
         navigator.clipboard.writeText(url).then(() => {
             Swal.fire({
                 icon: 'success',
                 title: '¡Enlace copiado!',
                 text: 'Ya puedes pegar el enlace en un chat o correo.',
-                footer: '<small>El acceso es público para quien tenga este link.</small>',
                 timer: 3000,
-                showConfirmButton: false
+                showConfirmButton: false 
             });
         });
     }
-    
-/**
- * Filtra los manuales en tiempo real según el texto ingresado
- */
-function filtrarManuales() {
-    const busqueda = document.getElementById('inputBuscador').value.toLowerCase();
-    const manuales = document.querySelectorAll('.item-manual');
-    const sinResultados = document.getElementById('sinResultados');
-    const btnCargarMas = document.getElementById('btnCargarMas');
-    let encontrados = 0;
 
-    manuales.forEach(manual => {
-        const titulo = manual.getAttribute('data-titulo');
-        const contenido = manual.getAttribute('data-contenido');
-
-        if (titulo.includes(busqueda) || contenido.includes(busqueda)) {
-            manual.classList.remove('d-none');
-            encontrados++;
-        } else {
-            manual.classList.add('d-none');
-        }
-    });
-
-    // Gestionar UI según resultados
-    document.getElementById('contadorManuales').innerText = `${encontrados} Manuales`;
-    
-    // Ocultar botón "Cargar más" si hay búsqueda activa
-    if (btnCargarMas) {
-        btnCargarMas.classList.toggle('d-none', busqueda.length > 0);
+    const switchPublico = document.getElementById('switchPublico'); 
+    if (switchPublico) {
+        switchPublico.addEventListener('change', function() {
+            const label = document.getElementById('labelPublico');
+            label.innerHTML = this.checked 
+                ? '<i class="bi bi-globe text-success"></i> Público (Todo el sistema)' 
+                : '<i class="bi bi-lock-fill text-danger"></i> Privado (Solo mi grupo)'; 
+        });
     }
-
-    sinResultados.classList.toggle('d-none', encontrados > 0);
-}
-
-/**
- * Muestra todos los manuales ocultos inicialmente
- */
-function mostrarTodos() {
-    const manuales = document.querySelectorAll('.item-manual');
-    manuales.forEach(m => m.classList.remove('d-none'));
-    const btn = document.getElementById('btnCargarMas');
-    if (btn) btn.classList.add('d-none');
-}
 </script>
 
 <style>
-    .image-preview-wrapper { position: relative; overflow: hidden; border-radius: 4px; }
+    .image-preview-wrapper { position: relative; overflow: hidden; border-radius: 4px; } 
     .image-preview-wrapper .overlay {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(13, 110, 253, 0.5); display: flex; align-items: center; justify-content: center;
-        opacity: 0; transition: opacity 0.3s;
+        opacity: 0; transition: opacity 0.3s; 
     }
     .image-preview-wrapper:hover .overlay { opacity: 1; }
 </style>
