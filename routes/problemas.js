@@ -45,4 +45,11 @@ router.post('/nuevo', (req, res, next) => {
     next();
 }, controller.crear);
 
+// Línea 57 aprox.
+router.post('/eliminar/:id', controller.eliminar); 
+
+router.get('/editar/:id', controller.mostrarEditar);
+
+router.post('/editar/:id', upload.array('imagenes_pasos'), controller.actualizar);
+
 module.exports = router;

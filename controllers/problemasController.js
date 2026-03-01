@@ -84,3 +84,58 @@ exports.crear = async (req, res) => {
         res.status(500).render('500.twig');
     }
 };
+
+// ELIMINAR MANUAL
+exports.eliminar = async (req, res) => {
+    const { id } = req.params;
+    try {
+        // 1. Opcional: Borrar imágenes de Storage primero
+        const { data: pasos } = await supabase
+            .from('pasos')
+            .select('imagen_url')
+            .eq('problema_id', id);
+
+        const imagenes = pasos
+            ?.filter(p => p.imagen_url)
+            .map(p => p.imagen_url.split('/').pop());
+
+        if (imagenes?.length > 0) {
+            await supabase.storage.from('imagenes_pasos').remove(imagenes);
+        }
+
+        // 2. Borrar pasos manualmente (si no tienes CASCADE activado)
+        await supabase.from('pasos').delete().eq('problema_id', id);
+
+        // 3. Borrar el problema principal (Usa 'Problemas' con P mayúscula si es necesario)
+        const { error } = await supabase.from('problemas').delete().eq('id', id);
+        
+        if (error) throw error;
+        
+        res.redirect('/');
+    } catch (err) {
+        logger.error(`Error al eliminar manual ${id}: ${err.message}`);
+        res.status(500).send("Error al eliminar: " + err.message);
+    }
+};
+
+// MOSTRAR VISTA PARA EDITAR
+exports.mostrarEditar = async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('problemas')
+            .select('*, pasos(*)')
+            .eq('id', req.params.id)
+            .single();
+
+        if (error || !data) return res.redirect('/');
+        res.render('editar.twig', { problema: data });
+    } catch (err) {
+        res.redirect('/');
+    }
+};
+
+// ACTUALIZAR (Placeholder para que no crashee)
+exports.actualizar = async (req, res) => {
+    logger.info(`Actualizando problema ${req.params.id}`);
+    res.redirect('/');
+};
