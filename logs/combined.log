@@ -160,3 +160,35 @@
 {"level":"info","message":"Datos recibidos - Título: \"como preparar bizcochuelo mama cocina\" | Archivos: 0","timestamp":"2026-03-01 00:36:34"}
 {"level":"warn","message":"Aviso: No se subieron imágenes para este manual.","timestamp":"2026-03-01 00:36:34"}
 {"level":"info","message":"Ruta GET / accedida","timestamp":"2026-03-01 00:36:37"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-01 00:37:38"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-01 00:37:38"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:24:50"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:24:51"}
+{"level":"info","message":"GET /auth/login - Renderizando vista","timestamp":"2026-03-02 00:25:01"}
+{"level":"info","message":"GET /auth/login - Renderizando vista","timestamp":"2026-03-02 00:25:02"}
+{"level":"info","message":"POST /auth/login - Intento para: juanmn.soft@gmail.com","timestamp":"2026-03-02 00:25:03"}
+{"level":"info","message":"Llamando a Supabase Auth (signInWithPassword)...","timestamp":"2026-03-02 00:25:03"}
+{"level":"info","message":"Login exitoso para: juanmn.soft@gmail.com. Generando cookie.","timestamp":"2026-03-02 00:25:05"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-03-02 00:25:05"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-03-02 00:25:43"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:30:52"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:30:53"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:30:55"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:30:55"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:30:58"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:30:59"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:31:04"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:31:04"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-03-02 00:31:09"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:32:08"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:32:08"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-03-02 00:32:11"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:33:11"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:33:11"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:33:14"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:33:14"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:33:17"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:33:17"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:33:18"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:33:18"}
+{"level":"info","message":"Ruta GET / accedida","timestamp":"2026-03-02 00:33:21"}
