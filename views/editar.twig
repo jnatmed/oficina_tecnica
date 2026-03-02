@@ -49,7 +49,7 @@
                     <div id="lista-pasos">
                         <label class="form-label fw-bold text-secondary mb-3 small">PASOS DE LA SOLUCIÓN</label>
                         
-                        {% for paso in problema.pasos|sort((a, b) => a.orden <=> b.orden) %}
+                        {% for paso in problema.pasos %}
                             <div class="paso-container p-3 border rounded-3 bg-light mb-3 position-relative" onpaste="manejarPegado(event, this)">
                                 {# Referencia al ID para el controlador #}
                                 <input type="hidden" name="pasos_id[]" value="{{ paso.id }}">

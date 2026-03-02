@@ -11,7 +11,8 @@ exports.listar = async (req, res) => {
             .from('problemas')
             .select('*, pasos(*), categorias:problema_categorias(categorias(*))')
             .or(`es_publico.eq.true,creado_por.eq.${req.user.id}`)
-            .order('created_at', { ascending: false });
+            .order('created_at', { ascending: false })
+            .order('orden', { foreignTable: 'pasos', ascending: true });;
 
         if (error) throw error;
 
@@ -166,6 +167,7 @@ exports.mostrarEditar = async (req, res) => {
             .from('problemas')
             .select('*, pasos(*)')
             .eq('id', req.params.id)
+            .order('orden', { foreignTable: 'pasos', ascending: true })
             .single();
 
         if (error || !data) return res.redirect('/');
@@ -213,7 +215,8 @@ exports.actualizar = async (req, res) => {
 
         // 3. Gestionar PASOS (Actualizar existentes y crear nuevos)
         const promesasPasos = pasos_desc.map(async (desc, index) => {
-            const pasoId = pasos_id ? pasos_id[index] : null;
+            // Aseguramos que el ID del paso corresponda exactamente a su posición en el formulario
+            const pasoId = (pasos_id && pasos_id[index]) ? pasos_id[index] : null;
             let publicUrl = null;
 
             // Si hay una nueva imagen para este paso
@@ -265,6 +268,7 @@ exports.verPublico = async (req, res) => {
             .from('problemas')
             .select('*, pasos(*)')
             .eq('uuid', uuid) // Buscamos por el ID único público
+            .order('orden', { foreignTable: 'pasos', ascending: true })
             .single();
 
         if (error || !data) {
