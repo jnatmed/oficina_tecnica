@@ -139,7 +139,7 @@
                     <div class="card-body px-4 pb-4">
                         <p class="text-muted small"><i class="bi bi-calendar-event me-1"></i> {{ problema.created_at|date("d/m/Y H:i") }}</p> 
                         <div class="list-group list-group-flush border rounded">
-                            {% for paso in problema.pasos %}
+                            {% for paso in problema.pasos|sort((a, b) => a.orden <=> b.orden) %}
                                 <div class="list-group-item p-3">
                                     <div class="row align-items-center">
                                         <div class="col">

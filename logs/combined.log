@@ -192,3 +192,7 @@
 {"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 00:33:18"}
 {"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 00:33:18"}
 {"level":"info","message":"Ruta GET / accedida","timestamp":"2026-03-02 00:33:21"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 12:14:04"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 12:14:04"}
+{"level":"info","message":"Auth Route: Inicializando cliente con URL: OK","timestamp":"2026-03-02 12:14:41"}
+{"level":"info","message":"Supabase Client: URL=OK","timestamp":"2026-03-02 12:14:41"}
