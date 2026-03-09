@@ -16,12 +16,15 @@ exports.listar = async (req, res) => {
 
         if (error) throw error;
 
+        logger.info(`Manuales obtenidos: ${JSON.stringify(problemas)}`);
+
         // 2. Formatear la estructura de categorías para Twig (aplanar el array)
         const problemasFormateados = problemas.map(p => ({
             ...p,
             categorias: p.categorias.map(c => c.categorias)
         }));
 
+        logger.info(`Manuales obtenidos Formateados: ${JSON.stringify(problemasFormateados)}`);
         // 3. Obtener todas las categorías y contar cuántos manuales tienen cada una
         // (Esto alimenta el buscador de la derecha)
         const { data: catData } = await supabase
@@ -53,33 +56,31 @@ exports.crear = async (req, res) => {
     const files = req.files;
 
     try {
+        logger.info(`--- Iniciando creación de nuevo manual: ${titulo} ---`);
+
         // 1. Insertar el Problema con visibilidad
         const { data: problemaInsertado, error: errorP } = await supabase
             .from('problemas')
             .insert([{ 
                 titulo: titulo, 
                 creado_por: req.user.id,
-                es_publico: es_publico === 'on' // El switch de HTML envía 'on' si está marcado
+                es_publico: es_publico === 'on'
             }])
             .select()
             .single();
 
         if (errorP) throw errorP;
 
-        // 2. Procesar Tags (Categorías)
+        // 2. Procesar Tags (Categorías) - Mantener igual
         if (tags && tags.trim() !== "") {
             const listaTags = tags.split(',').map(t => t.trim().toLowerCase());
-            
             for (const nombreTag of listaTags) {
-                // Upsert de la categoría (la crea si no existe)
                 const { data: cat, error: errCat } = await supabase
                     .from('categorias')
                     .upsert({ nombre: nombreTag }, { onConflict: 'nombre' })
-                    .select()
-                    .single();
+                    .select().single();
 
                 if (!errCat) {
-                    // Relacionar en la tabla intermedia
                     await supabase.from('problema_categorias').insert({
                         problema_id: problemaInsertado.id,
                         categoria_id: cat.id
@@ -88,12 +89,18 @@ exports.crear = async (req, res) => {
             }
         }
 
-        // 3. Subir imágenes y armar pasos (Tu lógica original mejorada)
-        const pasosParaInsertar = await Promise.all(pasos_desc.map(async (desc, index) => {
+        // 3. Subir imágenes y armar pasos con SINCRONIZACIÓN
+        const pasosArray = Array.isArray(pasos_desc) ? pasos_desc : [pasos_desc];
+        
+        const pasosParaInsertar = await Promise.all(pasosArray.map(async (desc, index) => {
             let publicUrl = null;
-            if (files && files[index]) {
-                const file = files[index];
-                const fileName = `${Date.now()}_${file.originalname}`;
+            
+            // CAMBIO NEURÁLGICO: Sincronización por fieldname
+            // Buscamos el archivo que corresponda a este paso específico (ej: imagenes_pasos[0])
+            const file = files.find(f => f.fieldname === `imagenes_pasos[${index}]`) || files[index];
+
+            if (file) {
+                const fileName = `${Date.now()}_step_${index}_${file.originalname}`;
                 
                 const { error: uploadError } = await supabase.storage
                     .from('imagenes_pasos')
@@ -102,11 +109,13 @@ exports.crear = async (req, res) => {
                     });
 
                 if (!uploadError) {
-                    const { data: { publicUrl: url } } = supabase.storage
-                        .from('imagenes_pasos')
-                        .getPublicUrl(fileName);
-                    publicUrl = url;
+                    const { data } = supabase.storage.from('imagenes_pasos').getPublicUrl(fileName);
+                    publicUrl = data.publicUrl;
+                    logger.info(`[NUEVO PASO ${index + 1}] Imagen subida: ${publicUrl}`);
+                } else {
+                    logger.error(`[NUEVO PASO ${index + 1}] Error Storage: ${uploadError.message}`);
                 }
+                
                 if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
             }
 
@@ -118,11 +127,20 @@ exports.crear = async (req, res) => {
             };
         }));
 
-        await supabase.from('pasos').insert(pasosParaInsertar);
+        // 4. Inserción masiva de pasos con verificación
+        const { error: errPasos } = await supabase.from('pasos').insert(pasosParaInsertar);
+        
+        if (errPasos) {
+            logger.error(`Error insertando pasos: ${errPasos.message}`);
+            throw errPasos;
+        }
+
+        logger.info(`--- Manual creado exitosamente con ID: ${problemaInsertado.id} ---`);
         res.redirect('/?success=true');
+
     } catch (err) {
-        logger.error(`Error al crear manual: ${err.message}`);
-        res.status(500).render('500.twig');
+        logger.error(`Error crítico al crear manual: ${err.message}`);
+        res.status(500).render('500.twig', { error: err.message });
     }
 };
 
@@ -184,7 +202,9 @@ exports.actualizar = async (req, res) => {
     const files = req.files;
 
     try {
-        // 1. Actualizar datos básicos del Problema
+        logger.info(`--- Iniciando actualización de manual ID: ${id} ---`);
+
+        // 1. Actualizar datos básicos
         const { error: errP } = await supabase
             .from('problemas')
             .update({ 
@@ -193,19 +213,23 @@ exports.actualizar = async (req, res) => {
             })
             .eq('id', id);
 
-        if (errP) throw errP;
+        if (errP) {
+            logger.error(`Error actualizando tabla problemas: ${errP.message}`);
+            throw errP;
+        }
 
-        // 2. Gestionar TAGS (Borrar anteriores y poner los nuevos)
+        // 2. Gestionar TAGS
         await supabase.from('problema_categorias').delete().eq('problema_id', id);
-        
         if (tags && tags.trim() !== "") {
             const listaTags = tags.split(',').map(t => t.trim().toLowerCase());
             for (const nombreTag of listaTags) {
-                const { data: cat } = await supabase
+                const { data: cat, error: errCat } = await supabase
                     .from('categorias')
                     .upsert({ nombre: nombreTag }, { onConflict: 'nombre' })
                     .select().single();
                 
+                if (errCat) throw errCat;
+
                 await supabase.from('problema_categorias').insert({ 
                     problema_id: id, 
                     categoria_id: cat.id 
@@ -213,19 +237,26 @@ exports.actualizar = async (req, res) => {
             }
         }
 
-        // 3. Gestionar PASOS (Actualizar existentes y crear nuevos)
-        const promesasPasos = pasos_desc.map(async (desc, index) => {
-            // Aseguramos que el ID del paso corresponda exactamente a su posición en el formulario
+        // 3. Gestionar PASOS
+        const pasosArray = Array.isArray(pasos_desc) ? pasos_desc : [pasos_desc];
+
+        const promesasPasos = pasosArray.map(async (desc, index) => {
             const pasoId = (pasos_id && pasos_id[index]) ? pasos_id[index] : null;
             let publicUrl = null;
 
-            // Si hay una nueva imagen para este paso
-            if (files && files[index]) {
-                const file = files[index];
-                const fileName = `${Date.now()}_${file.originalname}`;
+            // --- SINCRONIZACIÓN PRECISA DE IMAGEN ---
+            // Buscamos el archivo cuyo fieldname sea exactamente "imagenes_pasos[N]"
+            const file = files.find(f => f.fieldname === `imagenes_pasos[${index}]`);
+
+            if (file) {
+                const fileName = `${Date.now()}_step_${index}_${file.originalname}`;
+                logger.info(`[PASO ${index + 1}] Archivo detectado para este índice. Subiendo...`);
+
                 const { error: upErr } = await supabase.storage
                     .from('imagenes_pasos')
-                    .upload(fileName, fs.readFileSync(file.path), { contentType: file.mimetype });
+                    .upload(fileName, fs.readFileSync(file.path), { 
+                        contentType: file.mimetype 
+                    });
 
                 if (!upErr) {
                     const { data } = supabase.storage.from('imagenes_pasos').getPublicUrl(fileName);
@@ -239,26 +270,35 @@ exports.actualizar = async (req, res) => {
                 orden: index + 1,
                 problema_id: id
             };
-            if (publicUrl) datosPaso.imagen_url = publicUrl;
 
-            if (pasoId) {
-                // Actualizar paso existente
-                return supabase.from('pasos').update(datosPaso).eq('id', pasoId);
-            } else {
-                // Insertar paso nuevo (olvidado anteriormente)
-                return supabase.from('pasos').insert([datosPaso]);
+            if (publicUrl) {
+                datosPaso.imagen_url = publicUrl;
             }
+
+            // Ejecución en DB (con el manejo de errores que ya vimos)
+            let resultado;
+            if (pasoId && pasoId !== 'nuevo') {
+                resultado = await supabase.from('pasos').update(datosPaso).eq('id', pasoId);
+            } else {
+                resultado = await supabase.from('pasos').insert([datosPaso]);
+            }
+
+            const { error: dbErr } = resultado;
+            if (dbErr) throw new Error(`Error en paso ${index + 1}: ${dbErr.message}`);
+
+            return resultado;
         });
 
         await Promise.all(promesasPasos);
+
+        logger.info(`--- Actualización completada exitosamente ---`);
         res.redirect('/?update=success');
 
     } catch (err) {
-        logger.error(`Error al actualizar manual ${id}: ${err.message}`);
-        res.status(500).render('500.twig');
+        logger.error(`Error crítico al actualizar manual ${id}: ${err.message}`);
+        res.status(500).render('500.twig', { error: err.message });
     }
 };
-
 
 // CONTROLADOR: Vista pública de compartido
 exports.verPublico = async (req, res) => {

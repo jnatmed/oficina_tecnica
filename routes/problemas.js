@@ -53,6 +53,6 @@ router.post('/eliminar/:id', controller.eliminar);
 
 router.get('/editar/:id', controller.mostrarEditar);
 
-router.post('/editar/:id', upload.array('imagenes_pasos'), controller.actualizar);
+router.post('/editar/:id', upload.any(), controller.actualizar);
 
 module.exports = router;

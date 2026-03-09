@@ -61,7 +61,7 @@
                                 
                                 <div class="row align-items-center g-2">
                                     <div class="col">
-                                        <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo">
+                                        <input type="file" name="imagenes_pasos[{{ loop.index0 }}]" class="form-control form-control-sm input-archivo">
                                     </div>
                                     {% if paso.imagen_url %}
                                     <div class="col-auto text-center">
@@ -160,19 +160,19 @@
      */
     function agregarCampoPaso() {
         const container = document.getElementById('lista-pasos');
-        const index = container.getElementsByClassName('paso-container').length + 1;
+        const index = container.getElementsByClassName('paso-container').length; // Usamos length como índice 0-based
         const div = document.createElement('div');
         div.className = 'paso-container p-3 border rounded-3 bg-white mb-3 shadow-sm animate__animated animate__fadeInLeft position-relative';
         div.setAttribute('onpaste', 'manejarPegado(event, this)');
         
         div.innerHTML = `
-            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" style="font-size: 0.7rem; z-index: 2;" title="Quitar este paso" onclick="this.parentElement.remove()"></button>
+            <button type="button" ...></button>
             <div class="pe-4">
                 <div class="d-flex align-items-center mb-2">
-                    <span class="badge bg-info text-dark rounded-pill me-2">${index}</span>
-                    <input type="text" name="pasos_desc[]" class="form-control form-control-sm border-info" placeholder="Descripción del nuevo paso..." required>
+                    <span class="badge bg-info text-dark rounded-pill me-2">${index + 1}</span>
+                    <input type="text" name="pasos_desc[]" ... required>
                 </div>
-                <input type="file" name="imagenes_pasos" class="form-control form-control-sm input-archivo">
+                <input type="file" name="imagenes_pasos[${index}]" class="form-control form-control-sm input-archivo">
                 <div class="preview-container mt-2"></div>
             </div>`;
         container.appendChild(div);

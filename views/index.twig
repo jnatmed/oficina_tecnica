@@ -101,68 +101,105 @@
         </div>
 
         <div id="contenedorManuales">
+            
             {% for problema in problemas %}
                 <div class="card card-manual mb-4 shadow-sm animate__animated animate__fadeInUp item-manual {% if loop.index > 5 %}d-none{% endif %}"
-                     data-titulo="{{ problema.titulo|lower }}"
-                     data-visibilidad="{{ problema.es_publico ? 'publico' : 'privado' }}" 
-                     data-tags="{% for cat in problema.categorias %}{{ cat.nombre|lower }} {% endfor %}" 
-                     data-contenido="{% for paso in problema.pasos %}{{ paso.descripcion|lower }} {% endfor %}"> 
+                    id="manual-{{ problema.id }}"
+                    data-titulo="{{ problema.titulo|lower }}"
+                    data-visibilidad="{{ problema.es_publico ? 'publico' : 'privado' }}" 
+                    data-tags="{% for cat in problema.categorias %}{{ cat.nombre|lower }} {% endfor %}" 
+                    data-contenido="{% for paso in problema.pasos %}{{ paso.descripcion|lower }} {% endfor %}"> 
                     
-                    <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
-                        <div>
-                            <h4 class="fw-bold text-primary mb-1">
-                                {{ problema.titulo }} 
-                                {% if not problema.es_publico %}
-                                    <i class="bi bi-lock-fill text-muted ms-2" title="Privado del grupo" style="font-size: 0.9rem;"></i> 
-                                {% endif %}
-                            </h4>
-                            <div class="mt-1">
-                                {% for cat in problema.categorias %}
-                                    <span class="badge bg-light text-primary border me-1 small fw-normal">{{ cat.nombre }}</span> 
-                                {% endfor %}
+                    {# HEADER: Ahora es clickeable para expandir #}
+                    <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center" 
+                        style="cursor: pointer;" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#collapse-{{ problema.id }}" 
+                        aria-expanded="false">
+                        
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-chevron-right me-3 text-primary transition-icon"></i>
+                            <div>
+                                <h4 class="fw-bold text-primary mb-1">{{ problema.titulo }} 
+                                    {% if not problema.es_publico %}
+                                        <i class="bi bi-lock-fill text-muted ms-2" style="font-size: 0.9rem;"></i> 
+                                    {% endif %}
+                                </h4>
+                                <div class="mt-1">
+                                    {% for cat in problema.categorias %}
+                                        <span class="badge bg-light text-primary border me-1 small fw-normal">{{ cat.nombre }}</span> 
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="dropdown">
+                        {# Menú de herramientas (Dropdown) - Detenemos la propagación para que no colapse al editar #}
+                        <div class="dropdown" onclick="event.stopPropagation();">
+                            <button class="btn btn-outline-secondary btn-sm" 
+                                    type="button" 
+                                    data-bs-toggle="dropdown" 
+                                    onclick="event.stopPropagation();" 
+                                    aria-expanded="false">
                                 <i class="bi bi-tools"></i> 
                             </button>
+
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                <li><a class="dropdown-item py-2" href="/editar/{{ problema.id }}"><i class="bi bi-pencil me-2 text-warning"></i>Editar</a></li> 
-                                <li><button class="dropdown-item py-2" onclick="compartirManual('{{ problema.uuid }}')"><i class="bi bi-share me-2 text-info"></i>Compartir enlace</button></li> 
+                                <li>
+                                    {# Se añade onclick="event.stopPropagation();" para evitar que el header reciba el clic #}
+                                    <a class="dropdown-item py-2" 
+                                    href="/editar/{{ problema.id }}" 
+                                    onclick="event.stopPropagation();">
+                                        <i class="bi bi-pencil me-2 text-warning"></i>Editar
+                                    </a>
+                                </li> 
+                                <li>
+                                    <button class="dropdown-item py-2" 
+                                            onclick="event.stopPropagation(); compartirManual('{{ problema.uuid }}')">
+                                        <i class="bi bi-share me-2 text-info"></i>Compartir enlace
+                                    </button>
+                                </li> 
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><button type="button" class="dropdown-item py-2 text-danger" onclick="confirmarEliminacion('{{ problema.id }}', '{{ problema.titulo }}')"><i class="bi bi-trash3 me-2"></i>Eliminar</button></li> 
+                                <li>
+                                    <button type="button" 
+                                            class="dropdown-item py-2 text-danger" 
+                                            onclick="event.stopPropagation(); confirmarEliminacion('{{ problema.id }}', '{{ problema.titulo }}')">
+                                        <i class="bi bi-trash3 me-2"></i>Eliminar
+                                    </button>
+                                </li> 
                             </ul>
                         </div>
+
+
                     </div>
                     
-                    <div class="card-body px-4 pb-4">
-                        <p class="text-muted small"><i class="bi bi-calendar-event me-1"></i> {{ problema.created_at|date("d/m/Y H:i") }}</p> 
-                        <div class="list-group list-group-flush border rounded">
-                            {% for paso in problema.pasos %}
-                                <div class="list-group-item p-3">
-                                    <div class="row align-items-center">
-                                        <div class="col">
-                                            <span class="fw-bold text-primary">{{ paso.orden }}.</span> {{ paso.descripcion }} 
-                                        </div>
-                                        {% if paso.imagen_url %}
-                                        <div class="col-auto">
-                                            <div class="image-preview-wrapper" onclick="verImagenFull('{{ paso.imagen_url }}', '{{ problema.titulo }} - Paso {{ paso.orden }}')">
-                                                <img src="{{ paso.imagen_url }}" class="rounded shadow-sm" style="width: 70px; height: 45px; object-fit: cover; cursor: pointer;"> 
-                                                <div class="overlay"><i class="bi bi-fullscreen text-white"></i></div> 
+                    {# CUERPO COLAPSABLE: Aquí están los pasos e imágenes #}
+                    <div id="collapse-{{ problema.id }}" class="collapse">
+                        <div class="card-body px-4 pb-4">
+                            <p class="text-muted small"><i class="bi bi-calendar-event me-1"></i> {{ problema.created_at|date("d/m/Y H:i") }}</p> 
+                            <div class="list-group list-group-flush border rounded">
+                                {% for paso in problema.pasos %}
+                                    <div class="list-group-item p-3">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <span class="fw-bold text-primary">{{ paso.orden }}.</span> {{ paso.descripcion }} 
                                             </div>
+                                            {% if paso.imagen_url %}
+                                            <div class="col-auto">
+                                                <div class="image-preview-wrapper" onclick="verImagenFull('{{ paso.imagen_url }}', '{{ problema.titulo }} - Paso {{ paso.orden }}')">
+                                                    {# Usamos loading="lazy" para extra performance #}
+                                                    <img src="{{ paso.imagen_url }}" class="rounded shadow-sm" 
+                                                        style="width: 70px; height: 45px; object-fit: cover; cursor: pointer;" 
+                                                        loading="lazy"> 
+                                                    <div class="overlay"><i class="bi bi-fullscreen text-white"></i></div> 
+                                                </div>
+                                            </div>
+                                            {% endif %}
                                         </div>
-                                        {% endif %}
                                     </div>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% else %}
-                <div class="text-center py-5 bg-white rounded shadow-sm">
-                    <i class="bi bi-inbox display-1 text-light"></i>
-                    <p class="mt-3 text-muted">Aún no hay manuales cargados.</p> 
                 </div>
             {% endfor %}
 

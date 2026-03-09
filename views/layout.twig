@@ -19,6 +19,22 @@
         /* Estilo para las imágenes clickeables */
         .img-pointer { cursor: zoom-in; transition: filter 0.2s; }
         .img-pointer:hover { filter: brightness(0.8); }
+            .transition-icon {
+                    transition: transform 0.3s ease;
+                }
+            {# Rota el icono 90 grados cuando el colapso no está contraído #}
+            .card-header:not(.collapsed) .transition-icon {
+                transform: rotate(90deg);
+            }                
+            .card-header[aria-expanded="true"] .transition-icon {
+                transform: rotate(90deg);
+            }
+            .card-manual {
+                transition: transform 0.2s;
+            }
+            .card-manual:hover {
+                transform: translateY(-2px);
+            }        
     </style>
 </head>
 <body>
